@@ -1,11 +1,12 @@
 # bash-rsnapshot
-rsnapshot bash script that mount an external usb device with its uuid and run rsnapshot. 
+rsnapshot bash script that mount an external usb device with its uuid and run rsnapshot.
 
 
-**installation** 
+
+**installation**
 
   install rsnapshot and configure it.
-  
+
   snapshot_root must reflect -p parameter
 
 **usage**
@@ -23,7 +24,10 @@ Crontab sample:
 
 For disk rotation simply duplicate the crontab lines with the second uuid
 
-**Log** 
+**Log**
 
-minimal output to syslog 
+minimal output to syslog
 
+**TODO**
+
+check rsnapshot installation and grep the snapshot_root directly from the config file.
