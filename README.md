@@ -6,7 +6,7 @@ rsnapshot bash script that mount an external usb device with its uuid and run rs
 
   install rsnapshot and configure it.
   
-  snapshot_root must reflect -p 
+  snapshot_root must reflect -p parameter
 
 **usage**
 
