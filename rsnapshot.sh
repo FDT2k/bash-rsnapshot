@@ -12,20 +12,20 @@ RSNAPSHOT_MODE="hourly"
 LOGFILE="/var/log/rsnapshot-inubo.log"
 MOUNT_PATH="/mnt"
 while getopts "h?u:r:l:p:" opt; do
-    case "$opt" in
-    h|\?)
-        show_help
-        exit 0
-        ;;
-    u)  UUID=$OPTARG
-        ;;
-    r)  RSNAPSHOT_MODE=$OPTARG
-        ;;
+		case "$opt" in
+		h|\?)
+				show_help
+				exit 0
+				;;
+		u)  UUID=$OPTARG
+				;;
+		r)  RSNAPSHOT_MODE=$OPTARG
+				;;
 		r)  LOGFILE=$OPTARG
-        ;;
+				;;
 		p)  MOUNT_PATH=$OPTARG
 				;;
-    esac
+		esac
 done
 
 shift $((OPTIND-1))
@@ -33,16 +33,16 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 isMounted() {
-        MOUNTPOINT=$1
-        grep -q " $(echo $MOUNTPOINT | sed -e 's/ /\\\\040/g') " /proc/mounts || isParentOnOtherDevice "$MOUNTPOINT"
+				MOUNTPOINT=$1
+				grep -q " $(echo $MOUNTPOINT | sed -e 's/ /\\\\040/g') " /proc/mounts || isParentOnOtherDevice "$MOUNTPOINT"
 }
 
 assertMounted() {
-        MOUNTPOINT=$1
-        if ! isMounted "$MOUNTPOINT" ; then
-                echo $MOUNTPOINT not mounted >&2
-                exit 1
-        fi
+				MOUNTPOINT=$1
+				if ! isMounted "$MOUNTPOINT" ; then
+								echo $MOUNTPOINT not mounted >&2
+								exit 1
+				fi
 }
 
 do_mount(){
@@ -56,9 +56,9 @@ do_umount(){
 }
 
 isParentOnOtherDevice() {
-        DEVICE=$(stat -c "%d" "$1") || exit 1
-        DEVICE2=$(stat -c "%d" "`dirname $1`") || exit 1
-        test "$DEVICE" != "$DEVICE2"
+				DEVICE=$(stat -c "%d" "$1") || exit 1
+				DEVICE2=$(stat -c "%d" "`dirname $1`") || exit 1
+				test "$DEVICE" != "$DEVICE2"
 }
 SCRIPT_NAME=$0
 log(){
