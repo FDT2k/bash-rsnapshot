@@ -23,7 +23,7 @@ or
 
 
 
-Crontab sample:
+**Crontab sample**
 
     0       *     *       *       *       bash rsnapshot.sh -u 5be75f53-44d0-4e10-bccc-ef30872e7951 -r hourly
     0       0     *       *       *       bash rsnapshot.sh -u 5be75f53-44d0-4e10-bccc-ef30872e7951 -r daily
@@ -38,4 +38,4 @@ minimal output to syslog
 
 **TODO**
 
-check rsnapshot installation and grep the snapshot_root directly from the config file.
+inotify option and run as daemon option
