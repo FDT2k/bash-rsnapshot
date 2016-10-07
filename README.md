@@ -11,7 +11,15 @@ rsnapshot bash script that mount an external usb device with its uuid and run rs
 
 **usage**
 
-rsnapshot.sh -u [device_UUID] -r [rsnapshot_category] -p [mount_path]
+rsnapshot.sh -u [device_UUID] -r [rsnapshot_category]
+
+options are:
+
+-p [mount_path]
+
+or
+
+-a to automatically fetch the path from /etc/rsnapshot.conf
 
 
 

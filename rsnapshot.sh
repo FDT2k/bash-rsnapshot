@@ -12,7 +12,8 @@ UUID=""
 RSNAPSHOT_MODE="hourly"
 LOGFILE="/var/log/rsnapshot-inubo.log"
 MOUNT_PATH="/mnt"
-while getopts "h?u:r:l:p:" opt; do
+AUTO_MOUNT_PATH=false
+while getopts "h?u:r:l:p:a" opt; do
 	case "$opt" in
 	h|\?)
 			show_help
@@ -25,6 +26,8 @@ while getopts "h?u:r:l:p:" opt; do
 	r)  LOGFILE=$OPTARG
 			;;
 	p)  MOUNT_PATH=$OPTARG
+			;;
+	a)  AUTO_MOUNT_PATH=true
 			;;
 	esac
 done
@@ -72,6 +75,7 @@ show_help(){
 	echo "Do not forget to configure rsnapshot to point to your MOUNT_PATH"
 	echo "rsnapshot.sh -u [UUID] -r [RSNAPSHOT_MODE] "
 	echo "optional: -p [MOUNT_PATH] (default: /mnt)"
+	echo "optional: -a : auto fetch the mount path from rsnapshot"
 	exit 1
 }
 
@@ -83,6 +87,19 @@ if [ -z "$RSNAPSHOT_MODE" ]; then
 	show_help
 fi
 
+if $AUTO_MOUNT_PATH; then
+	if [ -f "/etc/rsnapshot.conf" ]; then
+		GREPPED_PATH=$(cat /etc/rsnapshot.conf | grep snapshot_root | grep -v "#" | sed 's/snapshot_root\s*\(.*\)$/\1/' | sed 's/^ *//;s/ *$//') 
+		if [ ! -z "$GREPPED_PATH" ];then
+			MOUNT_PATH=$GREPPED_PATH
+		else
+			shutdown "-a option is setted but could'nt fetch the snapshot_root config from /etc/rsnapshot.conf. Aborting"
+		fi
+	else
+		shutdown "no /etc/rsnapshot.conf file found"
+	fi
+fi
+
 MOUNT_DEVICE="/dev/disk/by-uuid/$UUID"
 if [ ! -b "$MOUNT_DEVICE" ]; then
 	log "external device is not plugged. Skipping."
@@ -92,7 +109,7 @@ fi
 if  ! isMounted $MOUNT_PATH ; then
 	echo $MOUNT_DEVICE
 	do_mount $MOUNT_DEVICE
-	log "mounted $MOUNT_DEVICE ok"
+	log "mounted $MOUNT_DEVICE on $MOUNT_PATH ok"
 	log "launching rsnapshot"
 	rsnapshot $RSNAPSHOT_MODE || shutdown "rsnapshot error"
 	log "finished rsnapshot"
