@@ -1,5 +1,6 @@
 #!/bin/bash
 # Rsnapshot with automount
+# v0.2
 
 
 UUID=""
@@ -7,7 +8,8 @@ RSNAPSHOT_MODE="hourly"
 LOGFILE="/var/log/rsnapshot-inubo.log"
 MOUNT_PATH=""
 AUTO_MOUNT_PATH=false
-while getopts "h?u:r:l:p:a" opt; do
+NFS_PATH="" # shadowman.example.com:/misc/export
+while getopts "h?u:r:l:m:p:a" opt; do
 	case "$opt" in
 	h|\?)
 			show_help
@@ -22,6 +24,8 @@ while getopts "h?u:r:l:p:a" opt; do
 	p)  MOUNT_PATH=$OPTARG
 			;;
 	a)  AUTO_MOUNT_PATH=true
+			;;
+	m)	NFS_PATH=$OPTARG
 			;;
 	esac
 done
@@ -77,13 +81,28 @@ isParentOnOtherDevice() {
 
 show_help(){
 	echo "Do not forget to configure rsnapshot to point to your MOUNT_PATH"
-	echo "rsnapshot.sh -u [UUID] -r [RSNAPSHOT_MODE] "
+	echo "rsnapshot.sh -u [UUID] -r [RSNAPSHOT_MODE] -a"
+	echo " OR "
+	echo "rsnapshot.sh -m [NFS_URI OR FULL MOUNT ARG] -r [RSNAPSHOT_MODE] -a"
 	echo "optional: -p [MOUNT_PATH] (default: /mnt)"
 	echo "optional: -a : auto fetch the mount path from rsnapshot"
 	exit 1
 }
 
-if [ -z "$UUID" ] ; then
+TO_MOUNT=""
+
+if [ ! -z "$UUID" ] ; then
+
+	TO_MOUNT=$UUID
+	MOUNT_DEVICE="/dev/disk/by-uuid/$UUID"
+fi
+
+if [ ! -z "$NFS_PATH" ] ; then
+	TO_MOUNT=$NFS_PATH
+	MOUNT_DEVICE=$NFS_PATH
+fi
+
+if [ -z "$TO_MOUNT" ] ; then
 	show_help
 fi
 
@@ -111,18 +130,23 @@ if [ -z "$MOUNT_PATH" ]; then
 	shutdown "you did not specify -p or -a option. resulting in an empty mount path"
 fi
 
-MOUNT_DEVICE="/dev/disk/by-uuid/$UUID"
+
+
+
+
 if [ ! -b "$MOUNT_DEVICE" ]; then
 	log "external device is not plugged. Skipping."
 	exit 0
 fi
 
 if  ! isMounted $MOUNT_PATH ; then
-	echo $MOUNT_DEVICE
+	echo "mounting  $MOUNT_DEVICE"
 	do_mount $MOUNT_DEVICE
 	log "mounted $MOUNT_DEVICE on $MOUNT_PATH ok"
+	echo "Launching rsnapshot"
 	log "launching rsnapshot"
 	rsnapshot $RSNAPSHOT_MODE || shutdown "rsnapshot error"
+
 	log "finished rsnapshot"
 	do_umount
 	log "umounted $MOUNT_DEVICE"
