@@ -9,6 +9,17 @@ LOGFILE="/var/log/rsnapshot-inubo.log"
 MOUNT_PATH=""
 AUTO_MOUNT_PATH=false
 NFS_PATH="" # shadowman.example.com:/misc/export
+
+show_help(){
+	echo "Do not forget to configure rsnapshot to point to your MOUNT_PATH"
+	echo "rsnapshot.sh -u [UUID] -r [RSNAPSHOT_MODE] -a"
+	echo " OR "
+	echo "rsnapshot.sh -m [NFS_URI OR FULL MOUNT ARG] -r [RSNAPSHOT_MODE] -a"
+	echo "optional: -p [MOUNT_PATH] (default: /mnt)"
+	echo "optional: -a : auto fetch the mount path from rsnapshot"
+	exit 1
+}
+
 while getopts "h?u:r:l:m:p:a" opt; do
 	case "$opt" in
 	h|\?)
@@ -79,15 +90,7 @@ isParentOnOtherDevice() {
 }
 
 
-show_help(){
-	echo "Do not forget to configure rsnapshot to point to your MOUNT_PATH"
-	echo "rsnapshot.sh -u [UUID] -r [RSNAPSHOT_MODE] -a"
-	echo " OR "
-	echo "rsnapshot.sh -m [NFS_URI OR FULL MOUNT ARG] -r [RSNAPSHOT_MODE] -a"
-	echo "optional: -p [MOUNT_PATH] (default: /mnt)"
-	echo "optional: -a : auto fetch the mount path from rsnapshot"
-	exit 1
-}
+
 
 TO_MOUNT=""
 
