@@ -88,7 +88,7 @@ if  ! isMounted $MOUNT_PATH ; then
     mkdir -p "$DESTINATION_FOLDER" || shutdown "cannot create destination_folder"
   fi
 
-  DB_STRING=x=$(printf '%q' "$DATABASES")
+  DB_STRING=$(printf '%q' "$DATABASES")
   DUMP_NAME=$($DB_STRING)_$(date +%Y-%m-%d_%H-%M-%S)
 
   mysqldump "$DATABASES" > "$DESTINATION_FOLDER/$DUMP_NAME" || shutdown "failed to dump the database"
