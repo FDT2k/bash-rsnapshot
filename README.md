@@ -54,7 +54,7 @@ bash script that mount an external usb device with its uuid and make a TAR archi
 
 
 
-mysqldump.sh
+mysqlbackup.sh
 ----------------
 
 bash script that mount an external usb device with its uuid or a network mount and run mysqldump
