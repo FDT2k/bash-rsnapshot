@@ -80,13 +80,17 @@ if  ! isMounted $MOUNT_PATH ; then
 	echo "Launching mysqldump"
 	log "launching mysqldump"
 	## do the dump here
+  #escaping crap
+  DEST_FOLDER=$(printf '%q' "$DEST_FOLDER")
   DESTINATION_FOLDER="$MOUNT_PATH/$DEST_FOLDER"
   if [ ! -d "$DESTINATION_FOLDER" ]; then
     log "creating destination folder $DESTINATION_FOLDER"
     mkdir -p "$DESTINATION_FOLDER" || shutdown "cannot create destination_folder"
   fi
 
-  DUMP_NAME=$(date +%Y-%m-%d_%H-%M-%S)
+  DB_STRING=x=$(printf '%q' "$DATABASES")
+  DUMP_NAME=$($DB_STRING)_$(date +%Y-%m-%d_%H-%M-%S)
+
   mysqldump "$DATABASES" > "$DESTINATION_FOLDER/$DUMP_NAME" || shutdown "failed to dump the database"
   if [ $GZIP ]; then
     gzip $DESTINATION_FOLDER/$DUMP_NAME
