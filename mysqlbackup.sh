@@ -36,7 +36,7 @@ while getopts "h?u:m:p:f:d:t:z" opt; do
     ;;
   t)  FILE_EXPIRATION=$OPTARG
     ;;
-  z)  GZIP = true
+  z)  GZIP=true
     ;;
 	esac
 done
