@@ -89,7 +89,8 @@ if  ! isMounted $MOUNT_PATH ; then
   fi
 
   DB_STRING=$(printf '%q' "$DATABASES")
-  DUMP_NAME=$($DB_STRING)_$(date +%Y-%m-%d_%H-%M-%S)
+  D=$(date +%Y-%m-%d_%H-%M-%S)
+  DUMP_NAME=$(printf '%q_%q' "$DB_STRING" "$D")
 
   mysqldump "$DATABASES" > "$DESTINATION_FOLDER/$DUMP_NAME" || shutdown "failed to dump the database"
   if [ $GZIP ]; then
