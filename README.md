@@ -1,5 +1,13 @@
 # bash-rsnapshot
+
+is a collection of script that make backups easier. 
+3 components are available: 
+rsnapshot.sh
+tar.sh
+mysqldump.sh
+
 rsnapshot bash script that mount an external usb device with its uuid and run rsnapshot.
+
 
 
 
