@@ -1,18 +1,14 @@
 # bash-rsnapshot
 
-is a collection of script that make backups easier. 
-3 components are available:
+is a collection of script for backuping things on linux computers.
 
-  rsnapshot.sh
-  
-  tar.sh
-  
-  mysqldump.sh
-
-rsnapshot bash script that mount an external usb device with its uuid and run rsnapshot.
+The initial idea is to backup on external drives with the ability to rotate the disks.
 
 
+rsnapshot.sh
+----------------
 
+bash script that mount an external usb device with its uuid and run rsnapshot.
 
 **installation**
 
@@ -52,5 +48,36 @@ minimal output to syslog
 
 inotify option and run as daemon option
 
+tar.sh
+----------------
+bash script that mount an external usb device with its uuid and make a TAR archive of a folder.
 
 
+
+mysqldump.sh
+----------------
+
+bash script that mount an external usb device with its uuid or a network mount and run mysqldump
+
+**requirements**
+
+Mysql client and mysqldump are required.
+
+**installation**
+create a file in /root named .my.cnf with the following content
+
+    [mysqldump]
+    user=yourusername
+    password=yourpassword
+    host=127.0.0.1
+
+next run this
+
+    chmod 0600 /root/.my.cnf
+
+you're good to go. 
+
+**crontab sample**
+
+    0       *     *       *       *       bash mysqldump.sh -m \"//yourCIFSHost/backup -o credentials=/etc/cifsauth\" -p /mnt -f DESTFOLDER -d DATABASE_NAME -z
+    0       *     *       *       *       bash mysqldump.sh -u YOUR_DEVICE_UUID -p /mnt -f DESTFOLDER -d DATABASE_NAME -z
