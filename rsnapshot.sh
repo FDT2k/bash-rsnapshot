@@ -1,11 +1,10 @@
 #!/bin/bash
 # Rsnapshot with automount
 # v0.2
-
-
+source ./common.sh
+source ./mounting.sh
 UUID=""
 RSNAPSHOT_MODE="hourly"
-LOGFILE="/var/log/rsnapshot-inubo.log"
 MOUNT_PATH=""
 AUTO_MOUNT_PATH=false
 NFS_PATH="" # shadowman.example.com:/misc/export
@@ -20,7 +19,7 @@ show_help(){
 	exit 1
 }
 
-while getopts "h?u:r:l:m:p:a" opt; do
+while getopts "h?u:r:m:p:a" opt; do
 	case "$opt" in
 	h|\?)
 			show_help
@@ -29,8 +28,6 @@ while getopts "h?u:r:l:m:p:a" opt; do
 	u)  UUID=$OPTARG
 			;;
 	r)  RSNAPSHOT_MODE=$OPTARG
-			;;
-	r)  LOGFILE=$OPTARG
 			;;
 	p)  MOUNT_PATH=$OPTARG
 			;;
@@ -47,47 +44,7 @@ shift $((OPTIND-1))
 
 
 SCRIPT_NAME=$0
-log(){
-	now="$(date +'%Y-%m-%d_%H-%M')"
-	#echo $1
-	logger "$SCRIPT_NAME $1"
-}
 
-shutdown() {
-	ERROR="[ERROR]: exiting.  $1"
-	log $ERROR
-	>&2 echo $ERROR
-	exit 2
-}
-
-
-isMounted() {
-	MOUNTPOINT=$1
-	grep -q " $(echo $MOUNTPOINT | sed -e 's/ /\\\\040/g') " /proc/mounts || isParentOnOtherDevice "$MOUNTPOINT"
-}
-
-assertMounted() {
-	MOUNTPOINT=$1
-	if ! isMounted "$MOUNTPOINT" ; then
-		echo $MOUNTPOINT not mounted >&2
-		exit 1
-	fi
-}
-
-do_mount(){
-	echo "mounting $1"
-	mount $1 $MOUNT_PATH || shutdown "can't mount device"
-}
-
-do_umount(){
-	umount $MOUNT_PATH || shutdown "can't umount device"
-}
-
-isParentOnOtherDevice() {
-	DEVICE=$(stat -c "%d" "$1") || exit 1
-	DEVICE2=$(stat -c "%d" "`dirname $1`") || exit 1
-	test "$DEVICE" != "$DEVICE2"
-}
 
 
 
@@ -144,14 +101,14 @@ fi
 
 if  ! isMounted $MOUNT_PATH ; then
 	echo "mounting  $MOUNT_DEVICE"
-	do_mount $MOUNT_DEVICE
+	do_mount $MOUNT_DEVICE $MOUNT_PATH
 	log "mounted $MOUNT_DEVICE on $MOUNT_PATH ok"
 	echo "Launching rsnapshot"
 	log "launching rsnapshot"
 	rsnapshot $RSNAPSHOT_MODE || shutdown "rsnapshot error"
 
 	log "finished rsnapshot"
-	do_umount
+	do_umount $MOUNT_PATH
 	log "umounted $MOUNT_DEVICE"
 else
 	shutdown "$MOUNT_PATH is already mounted. skipping"

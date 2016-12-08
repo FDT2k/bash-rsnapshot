@@ -40,3 +40,12 @@ minimal output to syslog
 **TODO**
 
 inotify option and run as daemon option
+
+
+
+
+
+
+
+
+sudo bash mysqlbackup.sh -m "//10.10.10.29/tech_backup -o credentials=/etc/cifsauth" -p /mnt -f mydumptest -d fabien -z
