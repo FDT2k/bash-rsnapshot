@@ -1,8 +1,9 @@
 #!/bin/bash
 # Rsnapshot with automount
 # v0.2
-source ./common.sh
-source ./mounting.sh
+DIRNAME=$(dirname $0)
+source $DIRNAME/common.sh
+source $DIRNAME/mounting.sh
 UUID=""
 RSNAPSHOT_MODE="hourly"
 MOUNT_PATH=""

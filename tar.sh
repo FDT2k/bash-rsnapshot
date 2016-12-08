@@ -1,8 +1,8 @@
 #!/bin/bash
 #dump a mysql mount the backup and umount the backup after
-source ./common.sh
-source ./mounting.sh
-
+DIRNAME=$(dirname $0)
+source $DIRNAME/common.sh
+source $DIRNAME/mounting.sh
 show_help(){
 	echo "Do not forget to configure your ~/.cnf with your access AND host for mysqldump"
 	echo "mysqlbackup.sh -u [UUID] "
