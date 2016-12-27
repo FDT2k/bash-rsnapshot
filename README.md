@@ -77,6 +77,17 @@ next run this
 
 you're good to go. 
 
+
+**usage**
+
+    mysqldump.sh -m MOUNT_INSTRUCTIONS -p MOUNT_DEST  -f DESTFOLDER -d DATABASE_NAME -z
+
+  -m pass here the string that you would use with the mount command
+  -p Mount destination
+  -f Destination folder into the mount destination (if you pass mysql/mywebsite, will create the backup in /mnt/mysql/mywebsite)
+  -d Database names
+  -z gzip dump
+
 **crontab sample**
 
     0       *     *       *       *       bash mysqldump.sh -m \"//yourCIFSHost/backup -o credentials=/etc/cifsauth\" -p /mnt -f DESTFOLDER -d DATABASE_NAME -z
