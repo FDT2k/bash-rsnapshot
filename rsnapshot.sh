@@ -51,11 +51,12 @@ SCRIPT_NAME=$0
 
 
 TO_MOUNT=""
-
+CHECK_BLOCK_DEVICE=false
 if [ ! -z "$UUID" ] ; then
 
 	TO_MOUNT=$UUID
 	MOUNT_DEVICE="/dev/disk/by-uuid/$UUID"
+	CHECK_BLOCK_DEVICE=true
 fi
 
 if [ ! -z "$NFS_PATH" ] ; then
@@ -95,7 +96,7 @@ fi
 
 
 
-if [ ! -b "$MOUNT_DEVICE" ]; then
+if [ ! -b "$MOUNT_DEVICE" -a CHECK_BLOCK_DEVICE ]; then
 	log "external device is not plugged. Skipping."
 	exit 0
 fi
