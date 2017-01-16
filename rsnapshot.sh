@@ -96,7 +96,7 @@ fi
 
 
 
-if [ ! -b "$MOUNT_DEVICE" -a CHECK_BLOCK_DEVICE ]; then
+if [ ! -b "$MOUNT_DEVICE" -a $CHECK_BLOCK_DEVICE ]; then
 	log "external device is not plugged. Skipping."
 	exit 0
 fi
